@@ -1,0 +1,35 @@
+I>submit c cless
+
+I>pp -o CLESS.tm1 -x utext.h CLESS.c
+
+I>p1 -o CLESS.tm2 -b0 -n8 -u CLESS.tm1
+
+I>p280 -o CLESS.s CLESS.tm2
+
+I>era CLESS.tm?
+I>as80 CLESS.s
+
+I>;era CLESS.s
+I>anat -o CLESS.asm CLESS.s
+
+I>submit c searchf
+
+I>pp -o SEARCHF.tm1 -x utext.h SEARCHF.c
+
+I>p1 -o SEARCHF.tm2 -b0 -n8 -u SEARCHF.tm1
+
+I>p280 -o SEARCHF.s SEARCHF.tm2
+
+I>era SEARCHF.tm?
+I>as80 SEARCHF.s
+
+I>;era SEARCHF.s
+I>anat -o SEARCHF.asm SEARCHF.s
+
+I>submit ld cless
+
+I>link -eb__memory -ed__edata -htr -tb0x100 crts.80 CLESS.o searchf.o libu.80 libc.80
+
+I>era CLESS.com
+I>ren CLESS.com=xeq
+I>
