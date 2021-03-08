@@ -292,9 +292,3 @@ COUNT searchf(s, sav, maxfnam)
         }
     return (fnames);
     }
-           dbuf[i++] = toupper(*s);
-    dbuf[i] = '\0';
-    if (*s != ':')
-        {
-        s = t;
-   
