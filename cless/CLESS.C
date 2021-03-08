@@ -140,5 +140,3 @@ BOOL main(ac, av)
         }
     return (YES);
     }
-                        switch (kbdchar)
-     
