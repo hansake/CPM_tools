@@ -6,4 +6,7 @@ These tools are written in C and compiled with Whitesmiths C compiler version 2.
 
 The program "cless" is a filter for paging through text one screenful at a time.
 
+The program "cyput" transfer files from a CP/M system using the YMODEM protocol.
+(Hopefully the will be a "cyget" program also that transfer files in the other direction.)
+
 More tools to come ...
