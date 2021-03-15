@@ -1,0 +1,4 @@
+link -eb__memory -ed__edata -htr -tb0x100 crts.80 cless.o searchf.o error.o libu.80 libc.80
+era cless.com
+ren cless.com=xeq
+    
