@@ -1,4 +1,0 @@
-link -eb__memory -ed__edata -htr -tb0x100 crts.80 tmrtst.o ccioz.o error.o libu.80 libc.80
-era tmrtst.com
-ren tmrtst.com=xeq
-e;ä        else if ((inchar & 0xff) == 3) /* Ctrl-C */ä            error("^C", "");ä        elseä            break;ä        }ä 
