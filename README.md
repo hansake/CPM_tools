@@ -1,7 +1,7 @@
 # CPM_tools
 CP/M tools written in C
 
-This reporitory contains some software tools for CP/M-80 and CP/M-86.
+This reporitory contains some software tools for CP/M-80.
 These tools are written in C and compiled with Whitesmiths C compiler version 2.2.
 
 CP/M functions that are used by several tools are in the cpm_functions directory.
