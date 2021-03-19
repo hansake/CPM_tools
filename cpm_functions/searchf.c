@@ -1,9 +1,8 @@
 /*  SEARCHF.C - CP/M Search file function
- *  Using BDOS Search and Search Next to expand wildcards.
- *  Written for Whitesmiths C compiler version 2.2
+ *  Usig BDOS Search and Search Next to expand wildcards
+ *  Written for  Whitesmiths C compiler version 2.2
  *  You are free to use, modify, and redistribute
- *  this source code. The software is provided "as is",
- *  without warranty of any kind.
+ *  this source code. No warranties given.
  *  Hastily Cobbled Together 2021 by Hans-Ake Lund
  */
 #include <std.h>
@@ -11,7 +10,7 @@
 
 #define NODEV	127
 
-GLOBAL BOOL dflag; /* debug flag */
+GLOBAL BOOL dflag;
 
 /* CP/M BDOS FCB structure */
 #define BDOSFCB	struct bdosfcb
@@ -39,9 +38,9 @@ struct dirent {
     TEXT ai[16];     /* block pointers */
     };
 
-LOCAL BDOSFCB srchfcb {0};
+LOCAL BDOSFCB srchfcb;
 LOCAL TEXT diskbuf[128] {0};
-LOCAL TEXT fnmbuf[256 * 15] {0};
+LOCAL TEXT fnmbuf[128 * 15] {0};
 LOCAL TINY curdev {NODEV};
 
 /* Disk letter to unit # translation */
@@ -73,6 +72,7 @@ LOCAL DEV {
 LOCAL TINY _getdev(s)
     FAST TEXT *s;
     {
+    IMPORT DEV _dev[];
     FAST TEXT *q, *r;
     DEV *p;
 
@@ -153,6 +153,7 @@ LOCAL COUNT ffnm(ifnm, disk, entno)
     COUNT disk;     /* Disk # of the file */
     BYTES entno;    /* Directory entry # for the file */
     {
+    IMPORT TEXT diskbuf[128];
     DIRENT *entptr;
     COUNT fidx, eidx;
     COUNT fnmlen;
@@ -169,7 +170,7 @@ LOCAL COUNT ffnm(ifnm, disk, entno)
         {
         if (entptr->f[fidx] != ' ')
             {
-            *fnm++ = entptr->f[fidx];
+            *fnm++ = 0x7f & entptr->f[fidx];
             fnmlen++;
             }
         else
@@ -184,7 +185,7 @@ LOCAL COUNT ffnm(ifnm, disk, entno)
         {
         if (entptr->e[eidx] != ' ')
             {
-            *fnm++ = entptr->e[eidx];
+            *fnm++ = 0x7f & entptr->e[eidx];
             fnmlen++;
             }
         else
@@ -204,6 +205,9 @@ COUNT searchf(s, sav, maxfnam)
     TEXT **sav;      /* pointer to array of pointers to matching filenames */
     COUNT maxfnam;   /* max number of elements in the file name array */
     {
+    IMPORT TINY curdev;
+    IMPORT BDOSFCB srchfcb;
+    IMPORT TEXT diskbuf[128];
     FAST BDOSFCB *pf = &srchfcb;
     FAST COUNT i;
     TINY dev;
@@ -264,4 +268,5 @@ COUNT searchf(s, sav, maxfnam)
         }
     return (fnames);
     }
-    
+= ':')
+ 
