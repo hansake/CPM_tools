@@ -1,35 +1,30 @@
-/*  CYPUT.C - a program for CP/M to send files
- *  over a serial link using the YMODEM protocol.
- *  Written for Whitesmiths C compiler version 2.2.
+/*  CYPUT.C - a Ymodem send program for CP/M
+ *  Written for  Whitesmiths C compiler version 2.2
  *  You are free to use, modify, and redistribute
- *  this source code. The software is provided "as is",
- *  without warranty of any kind.
- *  Hastily Cobbled Together 2021 by Hans-Ake Lund.
+ *  this source code. No warranties given.
+ *  Hastily Cobbled Together 2021 by Hans-Ake Lund
  */
 #include <std.h>
 #include <cpm.h>
 #include "ymodem.h"
 
-/* flags:
- *  -d     debug flag
- *  -k     send 1024 byte blocks instead of 128 byte blocks
- *  -p#    port number
+/*      flags:
+ *      -d        debug flag
+ *      -k        send 1024 byte blocks instead of 128 byte blocks
+ *      -p#       port number
  */
-GLOBAL BOOL dflag = NO;
-GLOBAL METACH cgetchr();
-GLOBAL VOID cputchr();
+BOOL dflag = NO;
+BOOL kflag = NO;
+COUNT portno = 2;
+TEXT **pfnms {0};
+TEXT *fnms[128] {0};
+TEXT blkbuf[1030] {0};
 
-LOCAL BOOL kflag = NO;
-LOCAL COUNT portno = 2;
-LOCAL TEXT **pfnms {0};
-LOCAL TEXT *fnms[128] {0};
-LOCAL TEXT blkbuf[1030] {0};
-
-GLOBAL TEXT *_pname {"cyput"};
+TEXT *_pname {"cyput"};
 
 /*  Send block over serial link
  */
-LOCAL VOID cputblk(blkbuf, addcrc)
+VOID cputblk(blkbuf, addcrc)
     TEXT *blkbuf;
     BOOL addcrc;
     {
@@ -51,14 +46,16 @@ BOOL main(ac, av)
     BYTES ac;
     TEXT **av;
     {
+    IMPORT BOOL dflag;
+    IMPORT BOOL kflag;
+    IMPORT COUNT portno;
     BOOL addcrc;
     BYTES blkno;
     COUNT blksize;
     COUNT cmdargs;
     COUNT eotsent;
-    COUNT nfiles;
     COUNT readlen;
-    COUNT resent;
+    COUNT nfiles;
     COUNT sntfiles;
     FILE fd;
     METACH inchr;
@@ -79,7 +76,6 @@ BOOL main(ac, av)
     else
         blksize = 128;
     sntfiles = 0;
-    resent = 0;
 
     putfmt("Sending files using YMODEM on port %i...\n", portno);
     for (cmdargs = 0; cmdargs < ac; cmdargs++)
@@ -133,10 +129,9 @@ BOOL main(ac, av)
                if (inchr == ACK)
                    break;
                else if (inchr == NAK)
-                   {
                    cputblk(blkbuf, addcrc); /* send the block again */
-                   resent++;
-                   }
+               else if (inchr == 0x03)
+                    error("transfer interupted by Ctrl-C", NULL);
                else if (inchr == -1) /* timeout */
                    error("reciever not responding to filename: ", pfnms[-1]);
                }
@@ -170,9 +165,11 @@ BOOL main(ac, av)
                        break;
                        }
                    else if (inchr == NAK)
-                       {
                        cputblk(blkbuf, addcrc); /* send the block again */
-                       resent++;
+                   else if (inchr == 0x03)
+                       {
+                       close(fd);
+                       error("transfer interupted by Ctrl-C", NULL);
                        }
                    else if (inchr == -1) /* timeout */
                        error("reciever not responding to data block", NULL);
@@ -194,6 +191,8 @@ BOOL main(ac, av)
                     inchr = cgetchr(portno, 10);
                     if (inchr == ACK)
                         break;
+                    else if (inchr == 0x03)
+                        error("transfer interupted by Ctrl-C", NULL);
                     else if ((inchr == NAK) && (inchr == -1))
                         cputchr(portno, EOT);
                     }
@@ -229,16 +228,14 @@ BOOL main(ac, av)
        inchr = cgetchr(portno, 60); /* one minute timeout */
        if (inchr == ACK)
            break;
-       else if (inchr == NAK)
-           {
+       else if (inchr == NAK) /* timeout */
            cputblk(blkbuf, addcrc); /* send the block again */
-           resent++;
-           }
+       else if (inchr == 0x03)
+           error("transfer interupted by Ctrl-C", NULL);
        else if (inchr == -1) /* timeout */
            error("reciever not responding to transmission end", NULL);
        }
     putfmt("Transfer complete, %i files sent\n", sntfiles);
-    putfmt("  %i blocks were re-sent\n", resent);
     exit(YES);
     }
-    
+   inchr = cgetchr(portno, 60); /* one minute timeout */
