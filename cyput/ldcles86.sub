@@ -1,0 +1,5 @@
+a:link -tb0x100 -ed__edata -eb__memory a:chdr.o cless.o searchf.o a:libc.86
+a:to86 -b1
+era cless.cmd
+ren cless.cmd=xeq.cmd
+

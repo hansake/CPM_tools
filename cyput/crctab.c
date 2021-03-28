@@ -1,6 +1,5 @@
 /*
- *  Table based CRC calculation, copied from lrzsz source code
- *  (https://github.com/UweOhse/lrzsz)
+ *  CRC calculation stuff, copied from lrzsz source code
  */
 #include <std.h>
 #include "ymodem.h"
@@ -86,4 +85,5 @@ VOID crccalc(blkbuf, addcrc)
         blkbuf[bufidx] = chksum;
 
     }
-    
+a54,  0x6a37,  0x7a16,  0x0af1,  0x1ad0,  0x2ab3,  0x3a92,
+    0xfd2e,  0xed0f,  0xdd6c,  0xcd4d,  0xbdaa

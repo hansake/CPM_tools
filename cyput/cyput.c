@@ -13,9 +13,9 @@
  *      -k        send 1024 byte blocks instead of 128 byte blocks
  *      -p#       port number
  */
-BOOL dflag = NO;
-BOOL kflag = NO;
-COUNT portno = 2;
+BOOL dflag = {NO};
+BOOL kflag = {NO};
+COUNT portno = {0};
 TEXT **pfnms {0};
 TEXT *fnms[128] {0};
 TEXT blkbuf[1030] {0};
@@ -62,6 +62,7 @@ BOOL main(ac, av)
     TEXT *blkptr;
     TEXT *fnmptr;
 
+    portno = cginit();
     getflags(&ac, &av, "d,k,p#:F <args>", &dflag, &kflag, &portno);
 
     if (dflag)
@@ -77,7 +78,13 @@ BOOL main(ac, av)
         blksize = 128;
     sntfiles = 0;
 
-    putfmt("Sending files using YMODEM on port %i...\n", portno);
+    if (cgportok(portno))
+        {
+        putfmt("Sending files using YMODEM on port %i (%p)\n",
+            portno, cgname(portno));
+        }
+    else
+        error("invalid port number", NULL);
     for (cmdargs = 0; cmdargs < ac; cmdargs++)
         {
         nfiles = searchf(av[cmdargs], fnms, 128);
@@ -88,6 +95,7 @@ BOOL main(ac, av)
             if (fd == STDERR)
                 error("can't read: ", pfnms[-1]);
 
+            cgstart(portno);
             /* Wait for start request from reciever,
              * NAK: checksum, C: CRC
              */
@@ -105,7 +113,10 @@ BOOL main(ac, av)
                     break;
                     }
                 else if (inchr == -1) /* timeout */
+                    {
+                    cgstop(portno);
                     error("reciever not ready yet", NULL);
+                    }
                 }
             /* Put together filename */
             fill(blkbuf, sizeof (blkbuf), 0);
@@ -131,9 +142,15 @@ BOOL main(ac, av)
                else if (inchr == NAK)
                    cputblk(blkbuf, addcrc); /* send the block again */
                else if (inchr == 0x03)
-                    error("transfer interupted by Ctrl-C", NULL);
+                   {
+                   cgstop(portno);
+                   error("transfer interupted by Ctrl-C", NULL);
+                   }
                else if (inchr == -1) /* timeout */
+                   {
+                   cgstop(portno);
                    error("reciever not responding to filename: ", pfnms[-1]);
+                   }
                }
 
             /* Send file blocks */
@@ -169,10 +186,14 @@ BOOL main(ac, av)
                    else if (inchr == 0x03)
                        {
                        close(fd);
+                       cgstop(portno);
                        error("transfer interupted by Ctrl-C", NULL);
                        }
                    else if (inchr == -1) /* timeout */
+                       {
+                       cgstop(portno);
                        error("reciever not responding to data block", NULL);
+                       }
                    }
                 if (128 <= readlen)
                     continue; /* not last block yet */
@@ -192,7 +213,10 @@ BOOL main(ac, av)
                     if (inchr == ACK)
                         break;
                     else if (inchr == 0x03)
+                        {
+                        cgstop(portno);
                         error("transfer interupted by Ctrl-C", NULL);
+                        }
                     else if ((inchr == NAK) && (inchr == -1))
                         cputchr(portno, EOT);
                     }
@@ -213,7 +237,10 @@ BOOL main(ac, av)
         if (inchr == 'C')
             break;
         else if (inchr == -1) /* timeout */
+            {
+            cgstop(portno);
             error("reciever not ready for end of transmission", NULL);
+            }
         }
     /* Put together empty filename */
     fill(blkbuf, sizeof (blkbuf), 0);
@@ -231,11 +258,20 @@ BOOL main(ac, av)
        else if (inchr == NAK) /* timeout */
            cputblk(blkbuf, addcrc); /* send the block again */
        else if (inchr == 0x03)
+           {
+           cgstop(portno);
            error("transfer interupted by Ctrl-C", NULL);
+           }
        else if (inchr == -1) /* timeout */
+           {
+           cgstop(portno);
            error("reciever not responding to transmission end", NULL);
+           }
        }
     putfmt("Transfer complete, %i files sent\n", sntfiles);
     exit(YES);
     }
-   inchr = cgetchr(portno, 60); /* one minute timeout */
+      cgstop(portno);
+            error("reciever not ready for end of transmission", NULL);
+            }
+    

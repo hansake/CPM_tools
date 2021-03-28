@@ -34,20 +34,21 @@ BOOL main(ac, av)
     METACH inchar;
     ULONG newtiml;
 
+    portno = cginit();
     getflags(&ac, &av, "d,p#", &dflag, &portno);
 
     if (dflag)
         putfmt("dflag = %p, portno = %i\n", dflag?"YES":"NO", portno);
 
-    if (portno == 1)
-        putfmt("Using port 1: TTY\n");
-    else if (portno == 2)
-        putfmt("Using port 2: CONSOLE\n");
+    if (cgportok(portno))
+        putfmt("Timer test using port %i (%p)\n", portno, cgname(portno));
     else
-        error("Unknown port", NULL);
+        error("invalid port number", NULL);
+
     putfmt("Press <Enter> to start timout test\n");
     getch();
     putfmt("Press any key after 30 seconds\n");
+    cgstart(portno);
     for (loops = 0; loops < 70; loops++)
         {
         cputchr(portno, '.');
@@ -55,23 +56,28 @@ BOOL main(ac, av)
         if (inchar < 0)
             continue;
         else if ((inchar & 0xff) == 3) /* Ctrl-C */
+            {
+            cgstop(portno);
             error("^C", "");
+            }
         else
             break;
         }
     if (70 <= loops)
         {
+        cgstop(portno);
         putfmt("\n");
         error("no input character to stop timeout test", NULL);
         }
+    cgstop(portno);
     putfmt("\nIn 30 seconds %i tests with 1 second timeout were made\n", loops);
     putfmt("Current value of timloops is %l\n", timloops);
     newtiml = (timloops * loops)/30;
     putfmt("Proposed value of timloops is %l\n", newtiml);
     return (YES);
     }
-dflag?"YES":"NO", portno);
+ portno, cgname(portno));
+    else
+        error("invalid port number", NULL);
 
-    if (portno == 1)
-        putfmt("Using port 1: TTY\n");
-    else if (portno
+    putfmt("Press <Enter>
