@@ -8,6 +8,6 @@ for: [hansake/Z80_Computer_board: A simple Z80 based computer board](https://git
 Functions with variable arguments must be modified to use the va_ macros in <stdarg.h>.
 The original Whitesmiths code assumes a straight linear placement of arguments on the stack.
 
-A major problem seems to be that routines that returns pointers and are not specified before they are used
+A major problem seems to be that functions that returns pointers and are not specified before they are used
 will return a 32 bit int instead of a 64 bit pointer, this will cause a core dump when the truncated
 pointer is used.
