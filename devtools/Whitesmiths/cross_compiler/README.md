@@ -2,7 +2,9 @@
 A slowly ongoing project is to port the Whitesmiths C compiler version 2.2
 to be compiled with gcc and run on a 64 bit Linux host.
 The primary target is 8080/Z80 in order to make programs
-for: [hansake/Z80_Computer_board: A simple Z80 based computer board](https://github.com/hansake/Z80_Computer_board)
+for: [hansake/Z80_Computer_board: A simple Z80 based computer board](https://github.com/hansake/Z80_Computer_board).
+
+When the cross compiler is working the code may be placed here.
 
 # Notes on the port to 64 bit gcc
 Functions with variable arguments must be modified to use the va_ macros in <stdarg.h>.
