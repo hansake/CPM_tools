@@ -7,6 +7,9 @@ for: [hansake/Z80_Computer_board: A simple Z80 based computer board](https://git
 When the cross compiler is working the code may be placed here.
 
 # Notes on the port to 64 bit gcc
+Operators: =+, =-, =* etc must be changed to +=, -=, *= etc.
+See: [operators - C Programming: += vs =+ - Stack Overflow](https://stackoverflow.com/questions/5011924/c-programming-vs).
+
 Functions with variable arguments must be modified to use the va_ macros in <stdarg.h>.
 The original Whitesmiths code assumes a straight linear placement of arguments on the stack.
 
