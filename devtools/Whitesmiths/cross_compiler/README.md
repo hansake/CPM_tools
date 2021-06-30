@@ -16,3 +16,7 @@ The original Whitesmiths code assumes a straight linear placement of arguments o
 A major problem seems to be that functions that returns pointers and are not specified before they are used
 will return a 32 bit int instead of a 64 bit pointer, this will cause a core dump when the truncated
 pointer is used.
+
+# Other implementations of Whitesmiths C compiler for 8080
+I just found this: [ogdenpm/ws21: Decompilations / ports of Whitesmiths 2.1 tools](https://github.com/ogdenpm/ws21).
+Maybe I will terminate my porting attempt and go for this instead.
