@@ -1,1 +1,1 @@
-Documentation for the Whitesmiths C compiler version 2.2 for 8080.
+Documentation for the Whitesmiths C compiler version 2.2 are moved to [Whitesmiths-C-compiler/compiler/doc at main · hansake/Whitesmiths-C-compiler](https://github.com/hansake/Whitesmiths-C-compiler/tree/main/compiler/doc).
