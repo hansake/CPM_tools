@@ -76,8 +76,3 @@ BOOL main(ac, av)
     putfmt("Proposed value of timloops is %l\n", newtiml);
     return (YES);
     }
- portno, cgname(portno));
-    else
-        error("invalid port number", NULL);
-
-    putfmt("Press <Enter>
