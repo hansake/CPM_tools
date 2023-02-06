@@ -140,12 +140,3 @@ VOID cputchr(portno, chrout)
             }
         }
     }
-
-cter i/o
- */
-VOID cgstop(portno)
-    COUNT portno;
-    {
-    }
-
-/* Input character fro
