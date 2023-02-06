@@ -271,7 +271,5 @@ BOOL main(ac, av)
     putfmt("Transfer complete, %i files sent\n", sntfiles);
     exit(YES);
     }
-      cgstop(portno);
-            error("reciever not ready for end of transmission", NULL);
-            }
+
     
