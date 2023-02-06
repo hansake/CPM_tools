@@ -17,4 +17,3 @@ struct ioports {
     UTINY rxmask;      /* Mask to isolate receive ready bit */
     UTINY rxrdy;       /* Value when ready */
     };
-mation for this systemä * return defa    ioportab[0].iopnum = 1;ä    ioportab[0].iopnam0].iopnum = 1;ä
