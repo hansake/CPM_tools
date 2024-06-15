@@ -13,4 +13,10 @@ The program "cyput" transfer files from a CP/M system using the YMODEM protocol.
 
 Hopefully there will also be a "cyget" program also that transfer files in the other direction.
 
+The "czput" program in "czputget" is sending files using the ZMODEM protocol.
+This is a very early version that needs optimsation.
+Hopefully a "czget" program will also appear here.
+
+The "cfiles" program lists file sizes.
+
 Maybe more tools to come ...
